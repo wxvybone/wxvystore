@@ -1,10 +1,10 @@
-const apiKey = '4iw2WmO4KKhrBVCHCfUmlDu19WpUAk0VvQPjA8l5'; // Replace with your actual API key
+const authToken = '4iw2WmO4KKhrBVCHCfUmlDu19WpUAk0VvQPjA8l5'; // Replace 'Your_Printful_Authentication_Token' with your actual Printful authentication token
 
 async function fetchOrders() {
   try {
     const response = await fetch('https://api.printful.com/orders', {
       headers: {
-        'Authorization': 'Bearer ' + apiKey,
+        'Authorization': `Bearer ${authToken}`, // Use Bearer token authentication
         'Content-Type': 'application/json'
       }
     });
@@ -15,29 +15,19 @@ async function fetchOrders() {
       throw new Error(data.error.message);
     }
 
-    displayResults(data.result);
+    return data.result; // Return the array of orders
   } catch (error) {
     console.error('Error fetching orders:', error.message);
+    return []; // Return an empty array in case of error
   }
 }
 
-function displayResults(orders) {
-  const resultsDiv = document.getElementById('results');
-  resultsDiv.innerHTML = ''; // Clear previous results
-
-  orders.forEach(order => {
-    const orderDiv = document.createElement('div');
-    orderDiv.classList.add('order');
-
-    // Display order information
-    orderDiv.innerHTML = `
-      <h3>Order ID: ${order.id}</h3>
-      <p>Status: ${order.status}</p>
-      <p>Total: $${order.costs.total}</p>
-    `;
-
-    resultsDiv.appendChild(orderDiv);
+// Usage example:
+fetchOrders()
+  .then(orders => {
+    console.log('Orders:', orders);
+    // Do something with the orders, such as displaying them on your website
+  })
+  .catch(error => {
+    console.error('Error:', error);
   });
-}
-
-fetchOrders();
